@@ -3,6 +3,7 @@ alias c='clear'
 alias pro='cd ~/Projects/'
 alias proex='cd ~/Projects/_EX/'
 alias grep='grep --color=auto'
+alias bshr='if [ -f ~/.bashrc ]; then source ~/.bashrc && echo -e "bash settings loaded from \033[0;32m~/.bashrc\033[0m"; else echo -e "\033[0;31m~/.bashrc not found!\033[0m"; fi'
 
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -88,7 +89,8 @@ alias osmoswag='stroybase && docker compose exec app php artisan l5-swagger:gene
 alias osmoseed='stroybase && docker compose exec app php artisan migrate:fresh --seed'
 # TSUS Mobile
 alias mob='pro && cd mptsus/' $* # папка моблильного приложения ЦУС
-alias mobcls='mob && npm cache clean --force && rm -rf node_modules && npm install && npx expo start --clear' $*
+alias mcls='npm cache clean --force && rm -rf node_modules && npm install && npx expo start --clear' $* # чистый запуск приложения react native с очисткой кэша и удалением node_modules
+alias mobcls='mob && mcls' $*
 alias mobs='mob && npx expo start --clear' $*
 alias mobupd='mob && gf && gpl'
 
