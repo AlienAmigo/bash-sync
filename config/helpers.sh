@@ -16,7 +16,9 @@ dir_exists() {
 safe_cd() {
     if dir_exists "$1"; then
         cd "$1" || return 1
-        echo -e "$MSG_SUCCESS: Changed to $(pwd)"
+        if [ "${CFG_IS_LOG_ON:=false}" == true ]; then
+            echo -e "$MSG_SUCCESS: Changed to $(pwd)"
+        fi
         return 0
     fi
     return 1
