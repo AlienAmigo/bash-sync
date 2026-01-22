@@ -124,6 +124,9 @@ export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 # ALIASES ======================================
+if [ -f ~/.bash_config ]; then
+    source ~/.bash_config
+fi
 
 # .bash_aliases
 if [ -f ~/.bash_aliases ]; then . ~/.bash_aliases

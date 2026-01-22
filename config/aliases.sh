@@ -1,30 +1,13 @@
+
 # Bash
 alias c='clear'
 alias pro='cd ~/Projects/'
-alias proex='cd ~/Projects/_EX/'
+alias proex='if [-f ~/Projects/_EX/]; then cd ~/Projects/_EX/; else echo "$NO_SUCH_FOLDER_TEXT"; fi'
 alias grep='grep --color=auto'
 alias bshr='if [ -f ~/.bashrc ]; then source ~/.bashrc && echo -e "bash settings loaded from \033[0;32m~/.bashrc\033[0m"; else echo -e "\033[0;31m~/.bashrc not found!\033[0m"; fi'
 
 alias ..='cd ..'
 alias ...='cd ../..'
-
-# Быстрый переход в домашнюю директорию
-alias ~='cd ~'
-alias home='cd ~'
-
-# Возврат в предыдущую директорию
-alias -- -='cd -'
-
-# Просмотр директорий с цветами
-#alias ls='ls -hF -1 --color=tty --sort=extension' # альтернативный вариант ls
-alias ls='ls -cvA --block-size=K --group-directories-first -1 --color=always'
-alias ll='ls -lah'
-alias la='ls -A'
-
-# Безопасные операции
-alias rm='rm -i'      # запрос подтверждения
-alias cp='cp -i'      # запрос подтверждения
-alias mv='mv -i'      # запрос подтверждения
 
 #VSCode
 # alias vsc='/c/Users/maest/AppData/Local/Programs/Microsoft\ VS\ Code/Code.exe' $*
