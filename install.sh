@@ -24,6 +24,14 @@ else
     CONFIG_DIR="$HOME/config"
 fi
 
+# Backup existing .bashrc
+if [ -f ~/.bashrc ]; then
+    BACKUP_DIR="$HOME/.bash_backup/$(date +%Y%m%d_%H%M%S)"
+    mkdir -p "$BACKUP_DIR"
+    cp ~/.bashrc "$BACKUP_DIR/.bashrc.backup"
+    echo -e "${BLUE}Backup created: $BACKUP_DIR/.bashrc.backup${NC}"
+fi
+
 # Create config directory
 mkdir -p "$CONFIG_DIR"
 mkdir -p "$CONFIG_DIR/os"
@@ -36,25 +44,15 @@ cp -r "$REPO_DIR/config/." "$CONFIG_DIR/" 2>/dev/null || {
     exit 1
 }
 
-echo -e "${GREEN}✓ Configuration files copied to $CONFIG_DIR${NC}"
-
-# Update .bashrc if needed
-echo -e "\n${BLUE}Updating .bashrc...${NC}"
-
-if grep -q "config/main.sh" ~/.bashrc; then
-    echo -e "${YELLOW}✓ .bashrc already has config loader${NC}"
+# Copy .bashrc from repo (replace existing)
+if [ -f "$REPO_DIR/.bashrc" ]; then
+    cp "$REPO_DIR/.bashrc" ~/.bashrc
+    echo -e "${GREEN}✓ .bashrc replaced with repo version${NC}"
 else
-    cat >> ~/.bashrc << 'EOF'
+    echo -e "${YELLOW}⚠ .bashrc not found in repo, keeping existing${NC}"
+fi
 
-# ============================================================================
-# MODULAR CONFIGURATION LOADER
-# ============================================================================
-if [ -f ~/config/main.sh ]; then
-    source ~/config/main.sh
-fi
-EOF
-    echo -e "${GREEN}✓ Added config loader to .bashrc${NC}"
-fi
+echo -e "${GREEN}✓ Configuration files copied to $CONFIG_DIR${NC}"
 
 # Create .bashrc_local template if doesn't exist
 if [ ! -f ~/.bashrc_local ]; then
@@ -88,4 +86,5 @@ echo -e "${YELLOW}Next steps:${NC}"
 echo "1. Edit ~/.bashrc_local to set your machine-specific paths"
 echo "2. Reload configuration: source ~/.bashrc"
 echo "3. Test with: paths"
-echo -e "\n${BLUE}Current project root: $CONFIG_DIR${NC}"
+echo -e "\n${BLUE}Config directory: $CONFIG_DIR${NC}"
+echo -e "${BLUE}Bashrc backup: $BACKUP_DIR${NC}"

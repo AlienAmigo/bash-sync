@@ -7,6 +7,7 @@ set -e
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+GREEN='\033[0;32m'
 NC='\033[0m'
 
 echo -e "${RED}=== Uninstalling Bash Configuration ===${NC}"
@@ -20,16 +21,32 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 CONFIG_DIR="$HOME/config"
-BACKUP_DIR="$HOME/.bash_backup/latest"
+BACKUP_DIR="$HOME/.bash_backup"
 
-# Create backup
-echo -e "\n${BLUE}Creating final backup...${NC}"
-mkdir -p "$BACKUP_DIR"
+# Find latest backup
+LATEST_BACKUP=$(ls -td "$BACKUP_DIR"/*/ 2>/dev/null | head -1)
+
+# Restore .bashrc from latest backup if available
+if [ -n "$LATEST_BACKUP" ] && [ -f "$LATEST_BACKUP/.bashrc.backup" ]; then
+    cp "$LATEST_BACKUP/.bashrc.backup" ~/.bashrc
+    echo -e "${GREEN}✓ Restored .bashrc from backup: $LATEST_BACKUP/.bashrc.backup${NC}"
+else
+    # Remove config loader from .bashrc
+    if [ -f ~/.bashrc ]; then
+        sed -i '/config\/main.sh/d' ~/.bashrc
+        sed -i '/MODULAR CONFIGURATION LOADER/d' ~/.bashrc
+        echo -e "${YELLOW}✓ Removed config loader from .bashrc${NC}"
+    fi
+fi
+
+# Create final backup before removal
+FINAL_BACKUP="$BACKUP_DIR/uninstall_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$FINAL_BACKUP"
 if [ -d "$CONFIG_DIR" ]; then
-    cp -r "$CONFIG_DIR" "$BACKUP_DIR/" 2>/dev/null || true
+    cp -r "$CONFIG_DIR" "$FINAL_BACKUP/" 2>/dev/null || true
 fi
 if [ -f ~/.bashrc_local ]; then
-    cp ~/.bashrc_local "$BACKUP_DIR/" 2>/dev/null || true
+    cp ~/.bashrc_local "$FINAL_BACKUP/" 2>/dev/null || true
 fi
 
 # Remove config directory
@@ -38,13 +55,9 @@ if [ -d "$CONFIG_DIR" ]; then
     echo -e "✓ Removed $CONFIG_DIR"
 fi
 
-# Remove config loader from .bashrc
-if [ -f ~/.bashrc ]; then
-    sed -i '/config\/main.sh/d' ~/.bashrc
-    sed -i '/MODULAR CONFIGURATION LOADER/d' ~/.bashrc
-    echo -e "✓ Removed config loader from .bashrc"
-fi
-
 echo -e "\n${RED}✓ Uninstallation complete!${NC}"
-echo "Backups saved to: $BACKUP_DIR"
-echo "Local files (~/.bashrc_local) preserved"
+echo -e "${BLUE}Final backup saved to: $FINAL_BACKUP${NC}"
+if [ -n "$LATEST_BACKUP" ]; then
+    echo -e "${BLUE}Previous backups available in: $BACKUP_DIR${NC}"
+fi
+echo -e "${YELLOW}Local files (~/.bashrc_local) preserved${NC}"

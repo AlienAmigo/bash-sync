@@ -35,7 +35,7 @@ alias idv='i && dv "$@"'
 # Git
 alias a='git add .'
 alias gcom='git commit -m "$*"'
-alias agcom='a && git commit -m "$*"'
+alias agcom='a && git commit -m $*'
 alias gf='git fetch "$*"'
 alias gs='git status'
 alias gl='git log --pretty=format:"%C(yellow)%h %C(magenta)%ad %C(blue)| %C(white)%s%d %C(green)[%an]" --date=short --graph --max-count=40 "$*"'
