@@ -9,7 +9,7 @@ alias pro='cd_safe "$PROJECTS_ROOT"'
 alias proex='cd_safe "$EXERCISES_ROOT"'
 alias grep='grep --color=auto'
 alias bshr='if [ -f ~/.bashrc ]; then source ~/.bashrc && echo -e "bash settings loaded from \033[0;32m~/.bashrc\033[0m"; else echo -e "\033[0;31m~/.bashrc not found!\033[0m"; fi'
-alias bshtest='echo "$PROJECTS_ROOT" && echo "$BASH_CONFIG_OS" && type pro && type gs'
+alias bshtest='bash_test'
 
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -58,9 +58,6 @@ alias grch='git rm --cached "$*"'  # удаляем файл из индекса
 alias grchf='git rm -r --cached "$*"'  # удаляем каталог из индекса, оставляя его в рабочем каталоге
 
 alias gcherry='git cherry -v master && git cherry -v master | wc -l'
-gsq() {
-    git rebase -i HEAD~"$@"
-}
 
 alias agrbc='a && git rebase --continue "$*"'
 alias grba='git rebase --abort "$*"'

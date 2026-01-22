@@ -1,3 +1,4 @@
+#!/bin/bash
 # ============================================================================
 # HELPERS FUNCTIONS
 # ============================================================================
@@ -63,7 +64,7 @@ reload() {
 }
 
 # Function to edit configuration
-edit-config() {
+edit_config() {
     local editor="${EDITOR:-nano}"
     if [ -f ~/.bashrc_local ]; then
         $editor ~/.bashrc_local
@@ -75,7 +76,7 @@ edit-config() {
 }
 
 # Test bash settings
-bash-test () {
+bash_test () {
     echo "BASH_CONFIG_LOADED: $BASH_CONFIG_LOADED"
     echo "PROJECTS_ROOT: $PROJECTS_ROOT"
     type pro

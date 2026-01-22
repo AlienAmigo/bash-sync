@@ -83,10 +83,7 @@ fi
 # Phase 4: Git configuration
 _safe_source "$CONFIG_DIR/git.sh" "git-config"
 
-# Phase 5: Functions and utilities
-_safe_source "$CONFIG_DIR/functions.sh" "functions"
-
-# Phase 6: Aliases (loaded last so they can use all previous configs)
+# Phase 5: Aliases (loaded last so they can use all previous configs)
 _safe_source "$CONFIG_DIR/aliases.sh" "aliases"
 
 # ============================================================================

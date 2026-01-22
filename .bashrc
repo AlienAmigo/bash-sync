@@ -1,6 +1,7 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# ============================================================================
+# SECTION 1: BASIC SHELL SETTINGS
+# ============================================================================
 
 # If not running interactively, don't do anything
 case $- in
@@ -8,54 +9,44 @@ case $- in
       *) return;;
 esac
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
+# History configuration
+HISTCONTROL=ignoreboth           # Don't save duplicate lines or lines starting with space
+shopt -s histappend              # Append to history file instead of overwriting
+HISTSIZE=1000                    # Number of commands in memory
+HISTFILESIZE=2000                # Number of commands in history file
 
-# append to the history file, don't overwrite it
-shopt -s histappend
+# Shell behavior
+shopt -s checkwinsize            # Update LINES/COLUMNS after each command
+# shopt -s globstar              # Enable ** pattern matching (uncomment if needed)
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
-
-# make less more friendly for non-text input files, see lesspipe(1)
+# Lesspipe for non-text files
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set variable identifying the chroot you work in (used in the prompt below)
+# ============================================================================
+# SECTION 2: TERMINAL AND PROMPT SETTINGS
+# ============================================================================
+
+# Debian chroot indicator
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
+# Color prompt detection
+color_prompt=
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
-
+# Force color prompt if requested
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+        color_prompt=yes
     else
-	color_prompt=
+        color_prompt=
     fi
 fi
 
+# Default prompt (fallback if modular config fails)
 if [ "$color_prompt" = yes ]; then
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
@@ -63,7 +54,7 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
+# Terminal window title
 case "$TERM" in
 xterm*|rxvt*)
     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
@@ -72,34 +63,28 @@ xterm*|rxvt*)
     ;;
 esac
 
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+# ============================================================================
+# SECTION 3: SYSTEM TOOLS AND EXTERNAL DEPENDENCIES
+# ============================================================================
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+# nvm (Node Version Manager) - must load before any Node.js commands
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # Load nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # Load nvm completions
+
+# SSH agent management
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval "$(ssh-agent -s)"
+fi
+ssh-add -l &>/dev/null || ssh-add
+
+# JetBrains IDE VM options
+___MY_VMOPTIONS_SHELL_FILE="${HOME}/.jetbrains.vmoptions.sh"
+if [ -f "${___MY_VMOPTIONS_SHELL_FILE}" ]; then
+    . "${___MY_VMOPTIONS_SHELL_FILE}"
 fi
 
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
+# Bash completion
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -108,83 +93,111 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# ============================================================================
+# SECTION 4: PATH CONFIGURATION
+# ============================================================================
+
+# Global npm packages
 export PATH="${PATH}:${HOME}/.npm-packages"
 
 # Android Studio SDK
-export ANDROID_HOME=$HOME/Android/Sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-
-
-# INPUT FORMAT ==================================
-
-SYMBOL_ARROW='▶'
-
-PS1_2STRINGS="$CL_GREEN_BOLD_BRIGHT"'\u'"$CL_GREEN_BRIGHT"'@\h '"$CL_WHITE"'\w'"$CL_CYAN_BOLD_BRIGHT"'$(__git_ps1)'
-PS1_2STRINGS+=$'\n'
-PS1_2STRINGS+="$CL_GREEN"'└─ $ '"$SYMBOL_ARROW""$CL_WHITE_BRIGHT"' '
-
-# show branch
-# с переносом строки
-PS1=$PS1_2STRINGS
-
-# без переноса строки + подсветка
-# function parse_git_branch {
-#     git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
-# }
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-if [ -z "$SSH_AUTH_SOCK" ]; then
-    eval "$(ssh-agent -s)"
-fi
-
-ssh-add -l &>/dev/null || ssh-add
-___MY_VMOPTIONS_SHELL_FILE="${HOME}/.jetbrains.vmoptions.sh"; if [ -f "${___MY_VMOPTIONS_SHELL_FILE}" ]; then . "${___MY_VMOPTIONS_SHELL_FILE}"; fi
-
-# Автодополнение
-if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-fi
-
-# Цвета для ls
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-fi
-
-# Редактор по умолчанию
-export EDITOR=nano
+export ANDROID_HOME="$HOME/Android/Sdk"
+export PATH="$PATH:$ANDROID_HOME/emulator"
+export PATH="$PATH:$ANDROID_HOME/platform-tools"
 
 # ============================================================================
-# MODULAR CONFIGURATION LOADER (НОВОЕ - ДОБАВЛЯЕМ В КОНЕЦ)
+# SECTION 5: MODULAR CONFIGURATION LOADER
 # ============================================================================
 
-# Первый приоритет: если существует модульная конфигурация
-if [ -f ~/config/main.sh ]; then
-    # Проверяем, находится ли config в рабочей папке для разработки
-    if [ -f "/d/Project/bash_settings/config/main.sh" ] && [ ! -L ~/config ]; then
-        # Режим разработки: используем рабочую папку
-        export BASH_CONFIG_DEBUG=true
-        source "/d/Project/bash_settings/config/main.sh"
-        echo -e "\033[0;33m[DEV MODE] Loaded config from development directory\033[0m"
-    else
-        # Продакшн режим: обычная загрузка
-        source ~/config/main.sh
+# Check if we're in development mode (config in project folder)
+DEV_CONFIG_DIR="/d/Project/bash_settings/config"
+if [ -f "$DEV_CONFIG_DIR/main.sh" ] && [ "$PWD" = "/d/Project/bash_settings" ]; then
+    # Development mode: load from project directory
+    export BASH_CONFIG_DEBUG=true
+    export CONFIG_DIR="$DEV_CONFIG_DIR"
+    source "$DEV_CONFIG_DIR/main.sh"
+    echo -e "\033[0;33m[DEV] Loaded config from: $DEV_CONFIG_DIR\033[0m"
+
+elif [ -f ~/config/main.sh ]; then
+    # Production mode: load from home directory
+    CONFIG_DIR="$HOME/config"
+    if [ -L "$CONFIG_DIR" ]; then
+        # If it's a symlink, follow it
+        CONFIG_DIR="$(readlink -f "$CONFIG_DIR")"
     fi
-# Второй приоритет: старая структура файлов
+    source "$CONFIG_DIR/main.sh"
+
 elif [ -f ~/.bash_config ]; then
+    # Legacy configuration (backward compatibility)
     source ~/.bash_config
+    echo -e "\033[0;33m[LEGACY] Using old .bash_config format\033[0m"
 fi
 
 # ============================================================================
-# FALLBACK FOR DIRECT TESTING (для отладки)
+# SECTION 6: FINAL PROMPT SETUP (AFTER CONFIG LOAD)
 # ============================================================================
 
-# Если нужно протестировать напрямую, можно раскомментировать:
-# export CONFIG_DIR="/d/Project/bash_settings/config"
-# if [ -f "$CONFIG_DIR/main.sh" ]; then
-#     export BASH_CONFIG_DEBUG=true
-#     source "$CONFIG_DIR/main.sh"
+# Build PS1 after config is loaded to use color variables
+# This ensures $CL_* variables are available if colors.sh was loaded
+if [ -n "${BASH_CONFIG_LOADED:-}" ] && [ "$BASH_CONFIG_LOADED" = "true" ]; then
+    # Only setup fancy PS1 if config was loaded successfully
+    SYMBOL_ARROW='▶'
+
+    # Check if color variables are available
+    if [ -n "${CL_RESET:-}" ] && [ -n "${CL_GREEN_BOLD_BRIGHT:-}" ]; then
+        # Build PS1 with colors from config
+        SYMBOL_ARROW='▶'
+
+        PS1_2STRINGS="$CL_GREEN_BOLD_BRIGHT"'\u'"$CL_GREEN_BRIGHT"'@\h '"$CL_WHITE"'\w'"$CL_CYAN_BOLD_BRIGHT"'$(__git_ps1)'
+        PS1_2STRINGS+=$'\n'
+        PS1_2STRINGS+="$CL_GREEN"'└─ $ '"$SYMBOL_ARROW""$CL_WHITE_BRIGHT"' '
+
+        # show branch
+        # с переносом строки
+        PS1=$PS1_2STRINGS
+    fi
+fi
+
+# ============================================================================
+# SECTION 7: FALLBACK SETTINGS (if config fails to load)
+# ============================================================================
+
+# If config didn't load, set minimal essential aliases
+if [ -z "${BASH_CONFIG_LOADED:-}" ] || [ "$BASH_CONFIG_LOADED" != "true" ]; then
+    # Essential aliases only
+    alias ls='ls --color=auto'
+    alias ll='ls -alF'
+    alias la='ls -A'
+    alias l='ls -CF'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+
+    # Basic path for dircolors
+    if [ -x /usr/bin/dircolors ]; then
+        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    fi
+fi
+
+# ============================================================================
+# SECTION 8: SSH-AGENT
+# ============================================================================
+eval $(ssh-agent -s)
+# pro
+# if [ -z "$SSH_AUTH_SOCK" ]; then
+#     eval "$(ssh-agent -s)"
 # fi
+
+# ssh-add -l &>/dev/null || ssh-add
+
+for key in ~/.ssh/*.pub; do
+    private_key="${key%.*}"
+    if [[ ! -f "$private_key" ]]; then
+        continue
+    fi
+    ssh-add "$private_key"
+done
+
+# ============================================================================
+# END OF .bashrc
+# ============================================================================
