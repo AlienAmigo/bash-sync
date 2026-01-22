@@ -51,7 +51,7 @@ if [ -n "$force_color_prompt" ]; then
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
 	# a case would tend to support setf rather than setaf.)
 	color_prompt=yes
-    elsehttps://github.com/AlienAmigo/WebStormSettings.git
+    else
 	color_prompt=
     fi
 fi
@@ -96,14 +96,6 @@ alias l='ls -CF'
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -123,22 +115,8 @@ export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
-# ALIASES ======================================
-if [ -f ~/.bash_config ]; then
-    source ~/.bash_config
-fi
-
-# .bash_aliases
-if [ -f ~/.bash_aliases ]; then . ~/.bash_aliases
-fi
-
 
 # INPUT FORMAT ==================================
-
-# Подключаем файл с цветами
-if [ -f ~/.bash_colors ]; then
-    source ~/.bash_colors
-fi
 
 SYMBOL_ARROW='▶'
 
@@ -178,3 +156,35 @@ fi
 
 # Редактор по умолчанию
 export EDITOR=nano
+
+# ============================================================================
+# MODULAR CONFIGURATION LOADER (НОВОЕ - ДОБАВЛЯЕМ В КОНЕЦ)
+# ============================================================================
+
+# Первый приоритет: если существует модульная конфигурация
+if [ -f ~/config/main.sh ]; then
+    # Проверяем, находится ли config в рабочей папке для разработки
+    if [ -f "/d/Project/bash_settings/config/main.sh" ] && [ ! -L ~/config ]; then
+        # Режим разработки: используем рабочую папку
+        export BASH_CONFIG_DEBUG=true
+        source "/d/Project/bash_settings/config/main.sh"
+        echo -e "\033[0;33m[DEV MODE] Loaded config from development directory\033[0m"
+    else
+        # Продакшн режим: обычная загрузка
+        source ~/config/main.sh
+    fi
+# Второй приоритет: старая структура файлов
+elif [ -f ~/.bash_config ]; then
+    source ~/.bash_config
+fi
+
+# ============================================================================
+# FALLBACK FOR DIRECT TESTING (для отладки)
+# ============================================================================
+
+# Если нужно протестировать напрямую, можно раскомментировать:
+# export CONFIG_DIR="/d/Project/bash_settings/config"
+# if [ -f "$CONFIG_DIR/main.sh" ]; then
+#     export BASH_CONFIG_DEBUG=true
+#     source "$CONFIG_DIR/main.sh"
+# fi

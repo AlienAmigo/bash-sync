@@ -1,9 +1,11 @@
 # ===========================================================================
-#s PATHS AND DIRECTORIES
+# PATHS AND DIRECTORIES
 # ============================================================================
 
 # Base directories
-export PROJECTS_ROOT="$HOME/Projects" #~/Projects/
+# Windows путь к рабочей папке, переопределить в .bashrc_local если нужно
+export PROJECTS_ROOT="/d/Project" #~/Projects/ #$HOME/Projects
+
 export WORK_ROOT="$PROJECTS_ROOT"
 export PERSONAL_ROOT="$PROJECTS_ROOT"
 export EXERCISES_ROOT="$PROJECTS_ROOT/_EX"
