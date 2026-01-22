@@ -34,8 +34,8 @@
 1. **Клонируйте репозиторий:**
 
 ```bash
-git clone <ваш-репозиторий> ~/dotfiles-bash
-cd ~/dotfiles-bash
+git clone <ваш-репозиторий> ~/bash-sync
+cd ~/bash-sync
 ```
 
 2. **Запустите установку:**
@@ -155,7 +155,7 @@ alias mymachine='echo "Это моя личная машина"'
 ### Обновление конфигурации
 
 ```bash
-cd ~/dotfiles-bash
+cd ~/bash-sync
 ./update.sh
 source ~/.bashrc
 ```
@@ -173,7 +173,7 @@ cp ~/.bash_backup/20240101_120000/.bashrc_local ~/
 ### Удаление
 
 ```bash
-cd ~/dotfiles-bash
+cd ~/bash-sync
 ./uninstall.sh
 ```
 
