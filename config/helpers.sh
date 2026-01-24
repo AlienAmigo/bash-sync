@@ -39,7 +39,7 @@ load_os_config() {
 # Function to show current paths
 paths() {
     echo -e "${CL_BLUE}=== Current Paths ===${CL_RESET}"
-    echo -e "Projects Root: ${CL_GREEN}${PROJECTS_ROOT}${CL_RESET}"
+    echo -e "Projects Root: ${CL_RESET}${PROJECTS_ROOT}${CL_RESET}"
     echo -e "Work:          ${CL_YELLOW}${WORK_ROOT}${CL_RESET}"
     echo -e "Learning:      ${CL_CYAN}${LEARNING_ROOT}${CL_RESET}"
     echo -e "Exercises:     ${CL_PURPLE}${EXERCISES_ROOT}${CL_RESET}"
