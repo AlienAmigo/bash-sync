@@ -31,10 +31,15 @@ if [ -n "$LATEST_BACKUP" ] && [ -f "$LATEST_BACKUP/.bashrc.backup" ]; then
     cp "$LATEST_BACKUP/.bashrc.backup" ~/.bashrc
     echo -e "${GREEN}✓ Restored .bashrc from backup: $LATEST_BACKUP/.bashrc.backup${NC}"
 else
-    # Remove config loader from .bashrc
+    # Remove config loader from .bashrc (portable sed: macOS vs GNU)
     if [ -f ~/.bashrc ]; then
-        sed -i '/config\/main.sh/d' ~/.bashrc
-        sed -i '/MODULAR CONFIGURATION LOADER/d' ~/.bashrc
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' '/config\/main.sh/d' ~/.bashrc
+            sed -i '' '/MODULAR CONFIGURATION LOADER/d' ~/.bashrc
+        else
+            sed -i '/config\/main.sh/d' ~/.bashrc
+            sed -i '/MODULAR CONFIGURATION LOADER/d' ~/.bashrc
+        fi
         echo -e "${YELLOW}✓ Removed config loader from .bashrc${NC}"
     fi
 fi

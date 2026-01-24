@@ -3,6 +3,9 @@
 
 set -e
 
+# REPO_ROOT (parent of scripts/)
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -13,16 +16,8 @@ NC='\033[0m' # No Color
 echo -e "${GREEN}=== Bash Configuration Installer ===${NC}"
 echo "Setting up modular bash configuration..."
 
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Determine OS
-if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
-    OS="windows"
-    CONFIG_DIR="$HOME/config"
-else
-    OS="linux"
-    CONFIG_DIR="$HOME/config"
-fi
+CONFIG_DIR="$HOME/config"
+BACKUP_DIR=""
 
 # Backup existing .bashrc
 if [ -f ~/.bashrc ]; then
@@ -79,7 +74,7 @@ fi
 
 # Make scripts executable
 chmod +x "$CONFIG_DIR/main.sh" 2>/dev/null || true
-chmod +x "$REPO_DIR/install.sh" 2>/dev/null || true
+chmod +x "$REPO_DIR/scripts/"*.sh 2>/dev/null || true
 
 echo -e "\n${GREEN}=== Installation Complete! ===${NC}"
 echo -e "${YELLOW}Next steps:${NC}"
@@ -87,4 +82,4 @@ echo "1. Edit ~/.bashrc_local to set your machine-specific paths"
 echo "2. Reload configuration: source ~/.bashrc"
 echo "3. Test with: paths"
 echo -e "\n${BLUE}Config directory: $CONFIG_DIR${NC}"
-echo -e "${BLUE}Bashrc backup: $BACKUP_DIR${NC}"
+[ -n "$BACKUP_DIR" ] && echo -e "${BLUE}Bashrc backup: $BACKUP_DIR${NC}"

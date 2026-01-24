@@ -21,9 +21,10 @@
 │       ├── windows.sh
 │       ├── linux.sh
 │       └── macos.sh
-├── install.sh                # Скрипт установки
-├── update.sh                 # Скрипт обновления
-├── uninstall.sh              # Скрипт удаления
+├── scripts/                   # Скрипты управления
+│   ├── install.sh            # Установка
+│   ├── update.sh             # Обновление
+│   └── uninstall.sh          # Удаление
 └── README.md                 # Эта документация
 ```
 
@@ -41,8 +42,8 @@ cd ~/bash-sync
 2. **Запустите установку:**
 
 ```bash
-chmod +x install.sh
-./install.sh
+chmod +x scripts/install.sh
+./scripts/install.sh
 ```
 
 3. **Настройте локальные параметры:**
@@ -156,25 +157,27 @@ alias mymachine='echo "Это моя личная машина"'
 
 ```bash
 cd ~/bash-sync
-./update.sh
+./scripts/update.sh
 source ~/.bashrc
 ```
 
 ### Резервное копирование и восстановление
 
-```bash
-# Резервное копирование (встроено в helpers.sh)
-backup-config
+Резервные копии создаются автоматически при `install.sh` и `update.sh` в `~/.bash_backup/`.
 
-# Восстановление из backup
-cp ~/.bash_backup/20240101_120000/.bashrc_local ~/
+```bash
+# Восстановление .bashrc из backup
+cp ~/.bash_backup/YYYYMMDD_HHMMSS/.bashrc.backup ~/.bashrc
+
+# Восстановление .bashrc_local (если сохраняли вручную)
+cp ~/.bash_backup/uninstall_YYYYMMDD_HHMMSS/.bashrc_local ~/
 ```
 
 ### Удаление
 
 ```bash
 cd ~/bash-sync
-./uninstall.sh
+./scripts/uninstall.sh
 ```
 
 ## 🛠️ Утилиты
@@ -240,11 +243,15 @@ echo "BASH_CONFIG_OS: $BASH_CONFIG_OS"
 echo "PROJECTS_ROOT: $PROJECTS_ROOT"
 ```
 
-### Тестовый скрипт
+### Проверка окружения
 
 ```bash
-cd /d/Project/bash_settings
-./test_runner.sh
+# Базовый тест (команда из helpers)
+bshtest
+
+# Или вручную
+paths
+echo "BASH_CONFIG_LOADED: $BASH_CONFIG_LOADED"
 ```
 
 ## 🐛 Решение проблем
@@ -258,11 +265,11 @@ ls -la ~/config/
 ls -la ~/.bashrc_local
 ```
 
-2. Проверьте симлинк:
+2. Проверьте симлинк (если используете симлинк вместо копирования):
 
 ```bash
 ls -la ~/config
-# Должно быть: config -> /d/Project/bash_settings/config
+# При копировании: config — каталог. При симлинке: config -> ~/bash-sync/config
 ```
 
 3. Включите отладку:
@@ -288,7 +295,7 @@ export NO_GIT_PROMPT=1
 1. **Перенесите алиасы** из `~/.bash_aliases` в `config/aliases.sh`
 2. **Перенесите пути** в `config/paths.sh`
 3. **Создайте** `~/.bashrc_local` с машинно-специфичными настройками
-4. **Используйте** `install.sh` для установки
+4. **Запустите** `./scripts/install.sh` для установки
 
 ## 🤝 Вклад в проект
 
