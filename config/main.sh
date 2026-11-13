@@ -146,6 +146,6 @@ export BASH_CONFIG_LOAD_TIME=$(date +%s)
 
 # Небольшое приветствие если в интерактивной сессии
 if [[ $- == *i* ]]; then
-    echo -e "\033[0;32m✓ Bash config loaded from: $CONFIG_DIR\033[0m"
+    echo -e "${CL_GREEN}✓ Bash config loaded from: $CONFIG_DIR${CL_RESET}"
     echo -e "  OS: $BASH_CONFIG_OS, Projects: $PROJECTS_ROOT"
 fi

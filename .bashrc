@@ -212,7 +212,7 @@ if ssh-add -l &>/dev/null; then
         private_key="${key%.*}"
         comment="$(awk '{print $3; exit}' "$key" 2>/dev/null)"
         if [ -n "$comment" ]; then
-            echo "${CL_WHITE_BOLD}ssh-key added:${CL_RESET} $private_key ($comment)"
+            echo -e "${CL_WHITE_BOLD}ssh-key added:${CL_RESET} $private_key ($comment)"
         else
             echo "ssh-key added: $private_key"
         fi
