@@ -87,7 +87,7 @@ source ~/.bashrc
 Управляющие флаги:
 
 ```bash
-export CFG_IS_LOG_ON=false     # Подробный вывод cd_safe (true — включить)
+export CFG_IS_LOG_ON=true      # Подробный вывод cd_safe (false — отключить)
 ```
 
 #### `paths.sh`

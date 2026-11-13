@@ -1,1 +1,1 @@
-export CFG_IS_LOG_ON=false
+export CFG_IS_LOG_ON=true
