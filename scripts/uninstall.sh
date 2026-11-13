@@ -23,13 +23,19 @@ fi
 CONFIG_DIR="$HOME/config"
 BACKUP_DIR="$HOME/.bash_backup"
 
-# Find latest backup
-LATEST_BACKUP=$(ls -td "$BACKUP_DIR"/*/ 2>/dev/null | head -1)
+# Find the oldest backup containing .bashrc.backup — that's the
+# pre-install state (later backups come from update.sh runs)
+ORIGINAL_BACKUP=""
+for dir in $(ls -td "$BACKUP_DIR"/*/ 2>/dev/null); do
+    if [ -f "$dir/.bashrc.backup" ]; then
+        ORIGINAL_BACKUP="$dir"
+    fi
+done
 
-# Restore .bashrc from latest backup if available
-if [ -n "$LATEST_BACKUP" ] && [ -f "$LATEST_BACKUP/.bashrc.backup" ]; then
-    cp "$LATEST_BACKUP/.bashrc.backup" ~/.bashrc
-    echo -e "${GREEN}✓ Restored .bashrc from backup: $LATEST_BACKUP/.bashrc.backup${NC}"
+# Restore .bashrc from the original backup if available
+if [ -n "$ORIGINAL_BACKUP" ]; then
+    cp "$ORIGINAL_BACKUP/.bashrc.backup" ~/.bashrc
+    echo -e "${GREEN}✓ Restored .bashrc from backup: $ORIGINAL_BACKUP/.bashrc.backup${NC}"
 else
     # Remove config loader from .bashrc (portable sed: macOS vs GNU)
     if [ -f ~/.bashrc ]; then
@@ -62,7 +68,7 @@ fi
 
 echo -e "\n${RED}✓ Uninstallation complete!${NC}"
 echo -e "${BLUE}Final backup saved to: $FINAL_BACKUP${NC}"
-if [ -n "$LATEST_BACKUP" ]; then
+if [ -d "$BACKUP_DIR" ]; then
     echo -e "${BLUE}Previous backups available in: $BACKUP_DIR${NC}"
 fi
 echo -e "${YELLOW}Local files (~/.bashrc_local) preserved${NC}"

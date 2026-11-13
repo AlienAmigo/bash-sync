@@ -3,7 +3,9 @@
 # This file sources all other config files in correct order
 
 CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOG_FILE="${TMPDIR:-/tmp}/bash_config_$(whoami).log"
+# id -un avoids the "DOMAIN\user" form of whoami on Windows domain machines
+LOG_USER="$(id -un 2>/dev/null || echo "${USER:-unknown}")"
+LOG_FILE="${TMPDIR:-/tmp}/bash_config_${LOG_USER}.log"
 
 # ============================================================================
 # SECTION 1: LOGGING FUNCTIONS (опционально, но полезно)
@@ -18,7 +20,7 @@ _log() {
     echo "[$timestamp] [$level] $message" >> "$LOG_FILE" 2>/dev/null
 
     # В консоль только если это ошибка или включен debug
-    if [[ "$level" == "ERROR" && "${BASH_CONFIG_DEBUG:=false}" == "true" ]]; then
+    if [[ "$level" == "ERROR" || "${BASH_CONFIG_DEBUG:-false}" == "true" ]]; then
         echo "[$level] $message" >&2
     fi
   }
@@ -117,10 +119,9 @@ _post_load_validation() {
         _log "WARN" "GIT_USER_EMAIL is not set"
     fi
 
-    # Создаем базовые директории если их нет
+    # Не создаем директорию автоматически — только предупреждаем
     if [[ ! -d "$PROJECTS_ROOT" ]]; then
-        _log "INFO" "Creating projects directory: $PROJECTS_ROOT"
-        mkdir -p "$PROJECTS_ROOT"
+        _log "WARN" "Projects directory does not exist: $PROJECTS_ROOT"
     fi
 
     return $errors
@@ -143,8 +144,8 @@ unset -f _post_load_validation
 export BASH_CONFIG_LOADED="true"
 export BASH_CONFIG_LOAD_TIME=$(date +%s)
 
-# Небольшое приветствие если в интерактивной сессии
-if [[ $- == *i* ]]; then
+# Небольшое приветствие в интерактивной сессии в режиме отладки
+if [[ $- == *i* && "${BASH_CONFIG_DEBUG:-false}" == "true" ]]; then
     echo -e "\033[0;32m✓ Bash config loaded from: $CONFIG_DIR\033[0m"
     echo -e "  OS: $BASH_CONFIG_OS, Projects: $PROJECTS_ROOT"
 fi

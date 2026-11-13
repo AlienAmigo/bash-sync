@@ -18,8 +18,9 @@ echo -e "${GREEN}=== Updating Bash Configuration ===${NC}"
 
 # Check if git repository and pull
 if [ -d "$REPO_DIR/.git" ]; then
-    echo -e "${BLUE}Pulling latest changes from git...${NC}"
-    (cd "$REPO_DIR" && git pull origin main) || {
+    CURRENT_BRANCH="$(git -C "$REPO_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || echo main)"
+    echo -e "${BLUE}Pulling latest changes from git (branch: $CURRENT_BRANCH)...${NC}"
+    (cd "$REPO_DIR" && git pull origin "$CURRENT_BRANCH") || {
         echo -e "${YELLOW}Warning: Could not pull from git${NC}"
     }
 fi

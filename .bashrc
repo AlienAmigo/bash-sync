@@ -104,13 +104,22 @@ export PATH="$PATH:$ANDROID_HOME/platform-tools"
 # ============================================================================
 
 # Check if we're in development mode (config in project folder)
-DEV_CONFIG_DIR="/d/Project/bash_settings/config"
-if [ -f "$DEV_CONFIG_DIR/main.sh" ] && [ "$PWD" = "/d/Project/bash_settings" ]; then
+# Looks for the repo in common locations; dev mode activates only when
+# the shell starts inside the repo directory
+DEV_REPO_DIR=""
+for candidate in "$HOME/bash-sync" "/d/Project/bash-sync"; do
+    if [ -f "$candidate/config/main.sh" ]; then
+        DEV_REPO_DIR="$candidate"
+        break
+    fi
+done
+
+if [ -n "$DEV_REPO_DIR" ] && [ "$PWD" = "$DEV_REPO_DIR" ]; then
     # Development mode: load from project directory
     export BASH_CONFIG_DEBUG=true
-    export CONFIG_DIR="$DEV_CONFIG_DIR"
-    source "$DEV_CONFIG_DIR/main.sh"
-    echo -e "\033[0;33m[DEV] Loaded config from: $DEV_CONFIG_DIR\033[0m"
+    export CONFIG_DIR="$DEV_REPO_DIR/config"
+    source "$CONFIG_DIR/main.sh"
+    echo -e "\033[0;33m[DEV] Loaded config from: $CONFIG_DIR\033[0m"
 
 elif [ -f ~/config/main.sh ]; then
     # Production mode: load from home directory
@@ -140,14 +149,16 @@ if [ -n "${BASH_CONFIG_LOADED:-}" ] && [ "$BASH_CONFIG_LOADED" = "true" ]; then
     # Check if color variables are available
     if [ -n "${CL_RESET:-}" ] && [ -n "${CL_GREEN_BOLD_BRIGHT:-}" ]; then
         # Build PS1 with colors from config
-        SYMBOL_ARROW='▶'
+        # Git branch in prompt unless disabled via NO_GIT_PROMPT=1 in .bashrc_local
+        GIT_PART=""
+        if [ -z "${NO_GIT_PROMPT:-}" ]; then
+            GIT_PART="$CL_CYAN_BOLD_BRIGHT"'$(__git_ps1)'
+        fi
 
-        PS1_2STRINGS="$CL_GREEN_BOLD_BRIGHT"'\u'"$CL_GREEN_BRIGHT"'@\h '"$CL_WHITE"'\w'"$CL_CYAN_BOLD_BRIGHT"'$(__git_ps1)'
+        PS1_2STRINGS="$CL_GREEN_BOLD_BRIGHT"'\u'"$CL_GREEN_BRIGHT"'@\h '"$CL_WHITE"'\w'"$GIT_PART"
         PS1_2STRINGS+=$'\n'
         PS1_2STRINGS+="$CL_GREEN"'└─ $ '"$SYMBOL_ARROW""$CL_WHITE_BRIGHT"' '
 
-        # show branch
-        # с переносом строки
         PS1=$PS1_2STRINGS
     fi
 fi
@@ -176,21 +187,22 @@ fi
 # ============================================================================
 # SECTION 8: SSH-AGENT
 # ============================================================================
-eval $(ssh-agent -s)
-# pro
-# if [ -z "$SSH_AUTH_SOCK" ]; then
-#     eval "$(ssh-agent -s)"
-# fi
+# Reuse an existing agent; start a new one only if none is running
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval "$(ssh-agent -s)" > /dev/null
+fi
 
-# ssh-add -l &>/dev/null || ssh-add
-
-for key in ~/.ssh/*.pub; do
-    private_key="${key%.*}"
-    if [[ ! -f "$private_key" ]]; then
-        continue
-    fi
-    ssh-add "$private_key"
-done
+# Add keys only if the agent has none loaded yet
+ssh-add -l &>/dev/null
+if [ $? -eq 1 ]; then
+    for key in ~/.ssh/*.pub; do
+        [ -e "$key" ] || continue
+        private_key="${key%.*}"
+        if [ -f "$private_key" ]; then
+            ssh-add "$private_key"
+        fi
+    done
+fi
 
 # ============================================================================
 # END OF .bashrc
