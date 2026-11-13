@@ -1,3 +1,31 @@
 # IDE
 .idea/
 .vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# AI assistants
+.gigacode/*
+.cursor/*
+.cursorrules
+.clinerules/*
+.continue/*
+.codeium/*
+.windsurfrules
+.windsurf/
+.github/copilot-instructions.md
+.aws/codewhisperer/*
+.tabnine/*
+.kimi-code/
+**/.ai/
+**/.aichat/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# local env files
+.env*.local
