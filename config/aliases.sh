@@ -10,7 +10,7 @@ alias proex='cd_safe "$EXERCISES_ROOT"'
 #alias ls='ls -hF -1 --color=tty --sort=extension' # альтернативный вариант ls
 alias ls='ls -cvA --block-size=K --group-directories-first -1 --color=always'
 alias grep='grep --color=auto'
-alias bshr='if [ -f ~/.bashrc ]; then source ~/.bashrc && echo -e "bash settings loaded from \033[0;32m~/.bashrc\033[0m"; else echo -e "\033[0;31m~/.bashrc not found!\033[0m"; fi'
+alias bshr='if [ -f ~/.bashrc ]; then source ~/.bashrc && echo -e "✓bash settings loaded from \033[0;32m~/.bashrc\033[0m"; else echo -e "\033[0;31m~/.bashrc not found!\033[0m"; fi'
 alias bshtest='bash_test'
 alias edit-config='edit_config'
 

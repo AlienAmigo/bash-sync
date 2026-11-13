@@ -199,13 +199,25 @@ if [ $? -eq 1 ]; then
         [ -e "$key" ] || continue
         private_key="${key%.*}"
         if [ -f "$private_key" ]; then
-            ssh-add "$private_key"
+            ssh-add "$private_key" &>/dev/null
         fi
     done
 fi
 
-# Show keys currently loaded in the agent
-ssh-add -l 2>/dev/null
+# Show agent pid and loaded keys (no key contents)
+if ssh-add -l &>/dev/null; then
+    [ -n "$SSH_AGENT_PID" ] && echo "Agent pid $SSH_AGENT_PID"
+    for key in ~/.ssh/*.pub; do
+        [ -e "$key" ] || continue
+        private_key="${key%.*}"
+        comment="$(awk '{print $3; exit}' "$key" 2>/dev/null)"
+        if [ -n "$comment" ]; then
+            echo "ssh-key added: $private_key ($comment)"
+        else
+            echo "ssh-key added: $private_key"
+        fi
+    done
+fi
 
 # ============================================================================
 # END OF .bashrc

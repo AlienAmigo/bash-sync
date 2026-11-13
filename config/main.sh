@@ -144,8 +144,8 @@ unset -f _post_load_validation
 export BASH_CONFIG_LOADED="true"
 export BASH_CONFIG_LOAD_TIME=$(date +%s)
 
-# Небольшое приветствие в интерактивной сессии в режиме отладки
-if [[ $- == *i* && "${BASH_CONFIG_DEBUG:-false}" == "true" ]]; then
+# Небольшое приветствие если в интерактивной сессии
+if [[ $- == *i* ]]; then
     echo -e "\033[0;32m✓ Bash config loaded from: $CONFIG_DIR\033[0m"
     echo -e "  OS: $BASH_CONFIG_OS, Projects: $PROJECTS_ROOT"
 fi
