@@ -1,4 +1,4 @@
-export CL_RESET="\033[0;m" # Text Reset
+export CL_RESET="\033[0m" # Text Reset
 
   # Regular Colors
 export CL_BLACK="\033[0;30m" # BLACK

@@ -119,7 +119,7 @@ if [ -n "$DEV_REPO_DIR" ] && [ "$PWD" = "$DEV_REPO_DIR" ]; then
     export BASH_CONFIG_DEBUG=true
     export CONFIG_DIR="$DEV_REPO_DIR/config"
     source "$CONFIG_DIR/main.sh"
-    echo -e "\033[0;33m[DEV] Loaded config from: $CONFIG_DIR\033[0m"
+    echo -e "${CL_YELLOW}[DEV] Loaded config from: $CONFIG_DIR${CL_RESET}"
 
 elif [ -f ~/config/main.sh ]; then
     # Production mode: load from home directory

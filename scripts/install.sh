@@ -67,7 +67,7 @@ if [ ! -f ~/.bashrc_local ]; then
 # Local aliases
 # alias mymachine='echo "This is my personal machine"'
 
-echo -e "\033[0;33mLocal configuration loaded\033[0m"
+echo -e "${YELLOW}Local configuration loaded${NC}"
 EOF
     echo -e "${GREEN}✓ Created ~/.bashrc_local template${NC}"
 fi
