@@ -150,14 +150,16 @@ if [ -n "${BASH_CONFIG_LOADED:-}" ] && [ "$BASH_CONFIG_LOADED" = "true" ]; then
     if [ -n "${CL_RESET:-}" ] && [ -n "${CL_GREEN_BOLD_BRIGHT:-}" ]; then
         # Build PS1 with colors from config
         # Git branch in prompt unless disabled via NO_GIT_PROMPT=1 in .bashrc_local
+        # Color codes are wrapped in \[ \] so readline excludes them from the
+        # prompt length calculation (otherwise line wrapping breaks)
         GIT_PART=""
         if [ -z "${NO_GIT_PROMPT:-}" ]; then
-            GIT_PART="$CL_CYAN_BOLD_BRIGHT"'$(__git_ps1)'
+            GIT_PART="\[$CL_CYAN_BOLD_BRIGHT\]"'$(__git_ps1)'
         fi
 
-        PS1_2STRINGS="$CL_GREEN_BOLD_BRIGHT"'\u'"$CL_GREEN_BRIGHT"'@\h '"$CL_WHITE"'\w'"$GIT_PART"
+        PS1_2STRINGS="\[$CL_GREEN_BOLD_BRIGHT\]"'\u'"\[$CL_GREEN_BRIGHT\]"'@\h '"\[$CL_WHITE\]"'\w'"$GIT_PART"
         PS1_2STRINGS+=$'\n'
-        PS1_2STRINGS+="$CL_GREEN"'└─ $ '"$SYMBOL_ARROW""$CL_WHITE_BRIGHT"' '
+        PS1_2STRINGS+="\[$CL_GREEN\]"'└─ $ '"$SYMBOL_ARROW""\[$CL_WHITE_BRIGHT\]"' '
 
         PS1=$PS1_2STRINGS
     fi

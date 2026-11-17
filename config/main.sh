@@ -98,6 +98,11 @@ if [[ -f "$HOME/.bashrc_local" && -r "$HOME/.bashrc_local" ]]; then
     # shellcheck source=/dev/null
     source "$HOME/.bashrc_local"
     _log "LOADED" "bashrc_local"
+
+    # Recompute derived paths: .bashrc_local may override PROJECTS_ROOT
+    # or redefine the *_path functions, so the exported variables
+    # (WORK_ROOT, EXERCISES_ROOT, MARKETPLACE_PATH, ...) must be rebuilt
+    _safe_source "$CONFIG_DIR/paths.sh" "paths (after local overrides)"
 fi
 
 # ============================================================================

@@ -92,14 +92,17 @@ export CFG_IS_LOG_ON=true      # Подробный вывод cd_safe (false �
 
 #### `paths.sh`
 
-Основные пути (переопределяются в `.bashrc_local`):
+Базовая точка переопределения — `PROJECTS_ROOT` (задаётся в `.bashrc_local`):
 
 ```bash
 export PROJECTS_ROOT="/d/Project"
-export WORK_ROOT="$PROJECTS_ROOT"
-export EXERCISES_ROOT="$PROJECTS_ROOT/_EX"
-# и другие...
 ```
+
+Остальные пути (`WORK_ROOT`, `EXERCISES_ROOT`, `MARKETPLACE_PATH` и др.) вычисляются
+из `PROJECTS_ROOT` через функции и пересчитываются повторно после загрузки
+`.bashrc_local`, поэтому локальное переопределение `PROJECTS_ROOT` применяется ко всем
+производным путям. При необходимости в `.bashrc_local` можно переопределить и сами
+функции (`marketplace_path()` и т.д.) — пересчёт подхватит и их.
 
 #### `aliases.sh`
 
