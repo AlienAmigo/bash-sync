@@ -31,6 +31,7 @@ load_os_config() {
     local config_file="$HOME/.bash_config_$os"
 
     if [ -f "$config_file" ]; then
+        # shellcheck source=/dev/null
         source "$config_file"
         echo -e "$MSG_LOADED: OS-specific config for $os"
     fi
@@ -55,6 +56,7 @@ paths() {
 reload() {
     echo -e "${CL_CYAN}Reloading bash configuration...${CL_RESET}"
     if [ -f ~/.bashrc ]; then
+        # shellcheck source=/dev/null
         source ~/.bashrc
         echo -e "${CL_GREEN}Configuration reloaded${CL_RESET}"
     else

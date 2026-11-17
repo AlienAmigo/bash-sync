@@ -1,0 +1,35 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax check (bash -n)
+        run: |
+          for f in .bashrc config/*.sh config/os/*.sh scripts/*.sh tests/*.sh; do
+            bash -n "$f" || exit 1
+          done
+
+      - name: Shellcheck
+        run: shellcheck .bashrc config/*.sh config/os/*.sh scripts/*.sh tests/*.sh
+
+  smoke:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      # shell: bash on Windows is Git Bash — the project's target environment
+      - name: Smoke test
+        shell: bash
+        run: bash tests/smoke.sh

@@ -14,7 +14,8 @@ LOG_FILE="${TMPDIR:-/tmp}/bash_config_${LOG_USER}.log"
 _log() {
     local level="$1"
     local message="$2"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
     # В файл (для дебага)
     echo "[$timestamp] [$level] $message" >> "$LOG_FILE" 2>/dev/null
@@ -147,7 +148,8 @@ unset -f _post_load_validation
 
 # Экспортируем переменную что конфиг загружен
 export BASH_CONFIG_LOADED="true"
-export BASH_CONFIG_LOAD_TIME=$(date +%s)
+BASH_CONFIG_LOAD_TIME=$(date +%s)
+export BASH_CONFIG_LOAD_TIME
 
 # Небольшое приветствие если в интерактивной сессии
 if [[ $- == *i* ]]; then

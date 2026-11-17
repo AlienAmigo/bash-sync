@@ -1,0 +1,4 @@
+# Shell configuration must use LF line endings everywhere:
+# install.sh copies working-tree files to ~/config, and CRLF breaks
+# bash on Linux/macOS and leaks \r into variables
+* text=auto eol=lf

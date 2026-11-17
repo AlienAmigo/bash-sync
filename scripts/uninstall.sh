@@ -24,11 +24,14 @@ CONFIG_DIR="$HOME/config"
 BACKUP_DIR="$HOME/.bash_backup"
 
 # Find the oldest backup containing .bashrc.backup — that's the
-# pre-install state (later backups come from update.sh runs)
+# pre-install state (later backups come from update.sh runs).
+# Backup dirs are timestamped (YYYYMMDD_HHMMSS), so glob order
+# is chronological; the first match is the oldest.
 ORIGINAL_BACKUP=""
-for dir in $(ls -td "$BACKUP_DIR"/*/ 2>/dev/null); do
+for dir in "$BACKUP_DIR"/*/; do
     if [ -f "$dir/.bashrc.backup" ]; then
         ORIGINAL_BACKUP="$dir"
+        break
     fi
 done
 

@@ -1,0 +1,6 @@
+# All files are bash (sourced configs without shebang included)
+shell=bash
+
+# SC1091 "not following": sourced system files (nvm, bash-completion,
+# /etc/lsb-release) exist only on the target machine by design
+disable=SC1091

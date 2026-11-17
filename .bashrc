@@ -75,6 +75,7 @@ export NVM_DIR="$HOME/.nvm"
 # JetBrains IDE VM options
 ___MY_VMOPTIONS_SHELL_FILE="${HOME}/.jetbrains.vmoptions.sh"
 if [ -f "${___MY_VMOPTIONS_SHELL_FILE}" ]; then
+    # shellcheck source=/dev/null
     . "${___MY_VMOPTIONS_SHELL_FILE}"
 fi
 
@@ -132,6 +133,7 @@ elif [ -f ~/config/main.sh ]; then
 
 elif [ -f ~/.bash_config ]; then
     # Legacy configuration (backward compatibility)
+    # shellcheck source=/dev/null
     source ~/.bash_config
     echo -e "\033[0;33m[LEGACY] Using old .bash_config format\033[0m"
 fi
@@ -154,6 +156,8 @@ if [ -n "${BASH_CONFIG_LOADED:-}" ] && [ "$BASH_CONFIG_LOADED" = "true" ]; then
         # prompt length calculation (otherwise line wrapping breaks)
         GIT_PART=""
         if [ -z "${NO_GIT_PROMPT:-}" ]; then
+            # Single quotes are intentional: __git_ps1 must run at prompt render time
+            # shellcheck disable=SC2016
             GIT_PART="\[$CL_CYAN_BOLD_BRIGHT\]"'$(__git_ps1)'
         fi
 
@@ -182,6 +186,7 @@ if [ -z "${BASH_CONFIG_LOADED:-}" ] || [ "$BASH_CONFIG_LOADED" != "true" ]; then
 
     # Basic path for dircolors
     if [ -x /usr/bin/dircolors ]; then
+        # shellcheck disable=SC2015  # stock Debian/Ubuntu idiom: fall back to default dircolors
         test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     fi
 fi

@@ -26,6 +26,8 @@
 │   ├── install.sh            # Установка
 │   ├── update.sh             # Обновление
 │   └── uninstall.sh          # Удаление
+├── tests/
+│   └── smoke.sh              # Smoke-тест загрузки конфигурации
 └── README.md                 # Эта документация
 ```
 
@@ -231,6 +233,16 @@ docker-restart # Перезапустить контейнеры
 - **macOS**: Terminal, iTerm2
 
 ## 🔍 Отладка
+
+### Автоматические проверки
+
+```bash
+bash tests/smoke.sh   # smoke-тест: загрузка, ОС, алиасы, переопределение путей
+shellcheck .bashrc config/*.sh config/os/*.sh scripts/*.sh tests/*.sh
+```
+
+Те же проверки запускаются в CI на каждый push в `main` и pull request
+(Ubuntu / macOS / Windows Git Bash).
 
 ### Включение режима отладки
 

@@ -30,5 +30,5 @@ fi
 if [[ -n "$CMDER_ROOT" ]]; then
     export IS_CMDER=true
     # Cmder-specific settings
-    alias cmder="cd '$CMDER_ROOT'"
+    alias cmder='cd "$CMDER_ROOT"'
 fi

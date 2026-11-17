@@ -40,7 +40,16 @@
 
 ## Тестирование изменений
 
-Тестового фреймворка нет. Проверка вручную:
+Автоматика:
+
+```bash
+bash tests/smoke.sh      # smoke-тест: загрузка конфига, ОС, алиасы, переопределение путей
+shellcheck .bashrc config/*.sh config/os/*.sh scripts/*.sh tests/*.sh
+```
+
+CI (`.github/workflows/test.yml`) прогоняет оба на push в `main` и PR, smoke-тест — на матрице Ubuntu / macOS / Windows (Git Bash). Замечания shellcheck не глушить массово: чинить или точечно отключать с комментарием.
+
+Ручная проверка:
 
 ```bash
 source ~/.bashrc          # или reload — перезагрузка конфига
