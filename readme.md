@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.svg" alt="BASH SYNC — Bash Configuration Manager">
+</p>
+
 # Bash Configuration Manager
 
 Модульная система конфигурации для bash, обеспечивающая синхронизацию настроек между разными компьютерами через Git.
@@ -23,6 +27,8 @@
 │       ├── windows.sh
 │       ├── linux.sh
 │       └── macos.sh
+├── assets/
+│   └── logo.svg               # Логотип для readme (те же цвета, что в терминале)
 ├── scripts/                   # Скрипты управления
 │   ├── install.sh            # Установка
 │   ├── update.sh             # Обновление
