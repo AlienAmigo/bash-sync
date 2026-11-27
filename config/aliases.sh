@@ -16,6 +16,9 @@ alias bshtest='bash_test'
 alias ..='cd ..'
 alias ...='cd ../..'
 
+# Logo
+alias logo='show_logo'
+
 # VSCode
 # alias vsc='/c/Users/maest/AppData/Local/Programs/Microsoft\ VS\ Code/Code.exe $*'
 

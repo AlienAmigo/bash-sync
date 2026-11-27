@@ -51,6 +51,7 @@ _log "INFO" "=== Starting bash config load ==="
 # Phase 1: Core foundation
 _safe_source "$CONFIG_DIR/config.sh" "config"
 _safe_source "$CONFIG_DIR/colors.sh" "colors"
+_safe_source "$CONFIG_DIR/logo.sh" "logo"
 _safe_source "$CONFIG_DIR/messages.sh" "messages"
 _safe_source "$CONFIG_DIR/helpers.sh" "helpers"
 
@@ -143,8 +144,11 @@ unset -f _post_load_validation
 export BASH_CONFIG_LOADED="true"
 export BASH_CONFIG_LOAD_TIME=$(date +%s)
 
-# Небольшое приветствие если в интерактивной сессии
+# Приветствие если в интерактивной сессии: логотип (если включен) + статус
 if [[ $- == *i* ]]; then
+    if [[ "${CFG_SHOW_LOGO:-true}" == "true" ]] && declare -F show_logo >/dev/null; then
+        show_logo
+    fi
     echo -e "\033[0;32m✓ Bash config loaded from: $CONFIG_DIR\033[0m"
     echo -e "  OS: $BASH_CONFIG_OS, Projects: $PROJECTS_ROOT"
 fi
